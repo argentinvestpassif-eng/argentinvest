@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArgentInvest — Bitcoin & XRP Eclipse Cycles</title>
+<meta name="description" content="Le pattern des éclipses qui prédit les cycles Bitcoin et XRP depuis 2009">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --bg: #04060F;
+  --gold: #C9A84C;
+  --gold-l: #E8C97A;
+  --gold-d: #7A6330;
+  --silver: #9BAABB;
+  --cream: #EDE4CC;
+  --red: #8B1A1A;
+  --red-l: #FF6B6B;
+  --green: #1A6B3C;
+  --green-l: #5DBF8A;
+  --orange: #C45E00;
+  --muted: #4A5268;
+  --border: rgba(201,168,76,0.18);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Crimson Pro', Georgia, serif;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Canvas étoiles ── */
+#cosmos {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Gradient radial de fond ── */
+.bg-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(26,107,60,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 20% 60%, rgba(139,26,26,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ── Wrapper ── */
+.wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  padding: 40px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ── LUNE SVG ── */
+.moon-wrap {
+  margin-bottom: 24px;
+  animation: float 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(201,168,76,0.3));
+}
+@keyframes float {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+
+/* ── Nom ── */
+.brand {
+  font-family: 'Cinzel', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: .25em;
+  color: var(--gold);
+  text-align: center;
+  text-shadow: 0 0 30px rgba(201,168,76,0.4);
+  margin-bottom: 8px;
+}
+
+.tagline {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--silver);
+  text-align: center;
+  letter-spacing: .05em;
+  margin-bottom: 6px;
+}
+
+/* ── Signal badge ── */
+.signal-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px;
+  border: 1px solid rgba(196,94,0,0.5);
+  border-radius: 40px;
+  background: rgba(196,94,0,0.08);
+  margin: 14px 0 32px;
+}
+.signal-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 8px var(--orange);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.4;transform:scale(.7)}
+}
+.signal-text {
+  font-family: 'Space Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .12em;
+  color: var(--orange);
+  text-transform: uppercase;
+}
+
+/* ── Divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.div-line { flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.div-sym { font-size:.9rem; color:var(--gold); opacity:.7; }
+
+/* ── LIENS ── */
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.link-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(13,21,40,0.7);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.link-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .25s;
+  border-radius: 10px;
+}
+
+.link-card:hover {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+/* Variants */
+.link-card.gold {
+  border-color: rgba(201,168,76,0.4);
+  background: linear-gradient(135deg, rgba(26,20,0,0.85), rgba(13,21,40,0.85));
+}
+.link-card.gold::before { background: radial-gradient(circle at left, rgba(201,168,76,0.06), transparent 70%); }
+.link-card.gold:hover { border-color: var(--gold); box-shadow: 0 12px 40px rgba(201,168,76,0.15); }
+.link-card.gold:hover::before { opacity: 1; }
+
+.link-card.red {
+  border-color: rgba(139,26,26,0.4);
+  background: linear-gradient(135deg, rgba(26,8,8,0.85), rgba(13,21,40,0.85));
+}
+.link-card.red:hover { border-color: var(--red-l); box-shadow: 0 12px 40px rgba(139,26,26,0.2); }
+
+.link-card.green {
+  border-color: rgba(26,107,60,0.4);
+  background: linear-gradient(135deg, rgba(8,26,14,0.85), rgba(13,21,40,0.85));
+}
+.link-card.green:hover { border-color: var(--green-l); box-shadow: 0 12px 40px rgba(26,107,60,0.2); }
+
+.link-card.orange {
+  border-color: rgba(196,94,0,0.4);
+  background: linear-gradient(135deg, rgba(26,16,0,0.85), rgba(13,21,40,0.85));
+}
+.link-card.orange:hover { border-color: var(--orange); box-shadow: 0 12px 40px rgba(196,94,0,0.2); }
+
+.link-card.blue {
+  border-color: rgba(26,58,139,0.5);
+  background: linear-gradient(135deg, rgba(8,14,30,0.85), rgba(13,21,40,0.85));
+}
+.link-card.blue:hover { border-color: #4A90D9; box-shadow: 0 12px 40px rgba(26,58,139,0.25); }
+
+.link-card.muted {
+  border-color: rgba(74,82,104,0.3);
+  background: rgba(13,21,40,0.5);
+}
+.link-card.muted:hover { border-color: var(--silver); }
+
+/* Icon box */
+.link-icon {
+  width: 42px; height: 42px; flex-shrink: 0;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  position: relative;
+}
+.link-icon.gold-bg { background: rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.25); }
+.link-icon.red-bg { background: rgba(139,26,26,0.15); border:1px solid rgba(255,107,107,0.2); }
+.link-icon.green-bg { background: rgba(26,107,60,0.15); border:1px solid rgba(93,191,138,0.2); }
+.link-icon.orange-bg { background: rgba(196,94,0,0.12); border:1px solid rgba(196,94,0,0.25); }
+.link-icon.blue-bg { background: rgba(26,58,139,0.15); border:1px solid rgba(74,144,217,0.25); }
+.link-icon.muted-bg { background: rgba(74,82,104,0.1); border:1px solid rgba(74,82,104,0.2); }
+
+/* Text */
+.link-body { flex:1; }
+.link-title {
+  font-family: 'Cinzel', serif;
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  margin-bottom: 3px;
+  line-height: 1.2;
+}
+.link-card.gold .link-title { color: var(--gold-l); }
+.link-card.red .link-title { color: var(--red-l); }
+.link-card.green .link-title { color: var(--green-l); }
+.link-card.orange .link-title { color: var(--orange); }
+.link-card.blue .link-title { color: #4A90D9; }
+.link-card.muted .link-title { color: var(--silver); }
+
+.link-sub {
+  font-size: .8rem;
+  font-style: italic;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+/* Arrow */
+.link-arrow {
+  font-size: .9rem;
+  opacity: .4;
+  transition: opacity .2s, transform .2s;
+  color: var(--silver);
+  flex-shrink: 0;
+}
+.link-card:hover .link-arrow { opacity:1; transform: translateX(3px); }
+
+/* Badge */
+.badge {
+  position: absolute;
+  top: -1px; right: 12px;
+  padding: 2px 10px;
+  border-radius: 0 0 6px 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: .55rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.badge.free { background: var(--green); color: #fff; }
+.badge.price { background: var(--gold); color: #1A0E00; }
+.badge.hot { background: var(--red); color: #fff; }
+.badge.live { background: var(--orange); color: #fff; }
+
+/* ── Section label ── */
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: .58rem;
+  letter-spacing: .3em;
+  color: var(--muted);
+  text-transform: uppercase;
+  text-align: center;
+  margin: 8px 0 12px;
+  width: 100%;
+}
+
+/* ── Réseaux sociaux ── */
+.socials {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.social-btn {
+  width: 46px; height: 46px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(13,21,40,0.7);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: all .2s;
+  cursor: pointer;
+}
+.social-btn:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(201,168,76,0.15);
+}
+
+/* ── Citation ── */
+.quote-box {
+  width: 100%;
+  padding: 16px 20px;
+  border-left: 2px solid var(--gold);
+  background: rgba(201,168,76,0.03);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 28px;
+}
+.quote-text {
+  font-size: .95rem;
+  font-style: italic;
+  color: var(--silver);
+  line-height: 1.65;
+  margin-bottom: 6px;
+}
+.quote-author {
+  font-family: 'Space Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .1em;
+  color: var(--gold-d);
+}
+
+/* ── Stats ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 28px;
+}
+.stat {
+  text-align: center;
+  padding: 12px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(13,21,40,0.5);
+}
+.stat-n {
+  font-family: 'Cinzel', serif;
+  font-size: 1.3rem;
+  color: var(--gold);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 3px;
+}
+.stat-l {
+  font-size: .68rem;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* ── Footer ── */
+.footer {
+  font-family: 'Space Mono', monospace;
+  font-size: .58rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  text-align: center;
+  opacity: .6;
+  line-height: 1.8;
+}
+
+/* ── Responsive ── */
+@media(max-width:400px){
+  .brand { font-size:1.3rem; }
+  .stats { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="cosmos"></canvas>
+<div class="bg-glow"></div>
+
+<div class="wrap">
+
+  <!-- LUNE -->
+  <div class="moon-wrap">
+    <svg viewBox="0 0 120 120" width="110" height="110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="56" stroke="#C9A84C" stroke-width=".7" stroke-dasharray="4 3" opacity=".3"/>
+      <circle cx="60" cy="60" r="45" stroke="#C9A84C" stroke-width=".5" opacity=".18"/>
+      <circle cx="60" cy="60" r="34" stroke="#C9A84C" stroke-width=".5" opacity=".12"/>
+      <!-- Lune croissant -->
+      <circle cx="60" cy="60" r="26" fill="#C9A84C" opacity=".95"/>
+      <circle cx="69" cy="60" r="22" fill="#04060F"/>
+      <!-- Étoiles -->
+      <circle cx="20" cy="25" r="1.2" fill="#C9A84C" opacity=".8"/>
+      <circle cx="95" cy="18" r=".9" fill="#C9A84C" opacity=".7"/>
+      <circle cx="105" cy="72" r="1.1" fill="#C9A84C" opacity=".8"/>
+      <circle cx="12" cy="85" r=".8" fill="#C9A84C" opacity=".6"/>
+      <circle cx="60" cy="8" r="1" fill="#C9A84C" opacity=".7"/>
+      <circle cx="38" cy="108" r=".9" fill="#C9A84C" opacity=".6"/>
+      <circle cx="90" cy="100" r="1" fill="#C9A84C" opacity=".7"/>
+    </svg>
+  </div>
+
+  <!-- BRAND -->
+  <div class="brand">ARGENTINVEST</div>
+  <div class="tagline">Bitcoin & XRP — Eclipse Cycles</div>
+
+  <!-- SIGNAL BADGE -->
+  <div class="signal-badge">
+    <div class="signal-dot"></div>
+    <span class="signal-text">Signal Solaire · 12 Août 2026</span>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-n">5/5</span>
+      <span class="stat-l">Cycles<br>confirmés</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">3</span>
+      <span class="stat-l">Langues<br>disponibles</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">34</span>
+      <span class="stat-l">Mois phase<br>solaire</span>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider">
+    <div class="div-line"></div>
+    <div class="div-sym">✦</div>
+    <div class="div-line"></div>
+  </div>
+
+  <!-- SECTION : RAPPORTS -->
+  <div class="section-label">Rapports & Analyses</div>
+
+  <div class="links">
+
+    <!-- PDF GRATUIT FR -->
+    <a href="https://drive.google.com/uc?export=download&id=1tFwPvlszA6tdPauxQ0T8vnTRWZBsCpnx" class="link-card gold" target="_blank">
+      <div class="badge free">Gratuit</div>
+      <div class="link-icon gold-bg">📊</div>
+      <div class="link-body">
+        <div class="link-title">Analyse Gratuite — Français</div>
+        <div class="link-sub">6 pages · Pattern Éclipses BTC & XRP · Aperçu</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- PDF GRATUIT EN -->
+    <a href="https://drive.google.com/uc?export=download&id=1tFwPvlszA6tdPauxQ0T8vnTRWZBsCpnx" class="link-card gold" target="_blank">
+      <div class="badge free">Free</div>
+      <div class="link-icon gold-bg">📊</div>
+      <div class="link-body">
+        <div class="link-title">Free Analysis — English</div>
+        <div class="link-sub">6 pages · Bitcoin & XRP Eclipse Pattern · Preview</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- PDF GRATUIT ES -->
+    <a href="https://drive.google.com/uc?export=download&id=1tFwPvlszA6tdPauxQ0T8vnTRWZBsCpnx" class="link-card gold" target="_blank">
+      <div class="badge free">Gratis</div>
+      <div class="link-icon gold-bg">📊</div>
+      <div class="link-body">
+        <div class="link-title">Análisis Gratuito — Español</div>
+        <div class="link-sub">6 páginas · Patrón Eclipses BTC & XRP · Vista previa</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider">
+    <div class="div-line"></div>
+    <div class="div-sym">☀️</div>
+    <div class="div-line"></div>
+  </div>
+
+  <!-- SECTION : RAPPORTS PAYANTS -->
+  <div class="section-label">Rapport Complet — 37€</div>
+
+  <div class="links">
+
+    <!-- PAYANT FR -->
+    <a href="https://argentinvest.gumroad.com/l/jsdkxc" class="link-card orange" target="_blank">
+      <div class="badge price">37€</div>
+      <div class="link-icon orange-bg">🔑</div>
+      <div class="link-body">
+        <div class="link-title">Rapport Complet — Français</div>
+        <div class="link-sub">11 pages · Signaux 2026 · BTC + XRP · Graphiques annotés</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- PAYANT EN -->
+    <a href="https://argentinvest.gumroad.com/l/jsdkxc" class="link-card orange" target="_blank">
+      <div class="badge price">37€</div>
+      <div class="link-icon orange-bg">🔑</div>
+      <div class="link-body">
+        <div class="link-title">Full Report — English</div>
+        <div class="link-sub">11 pages · 2026 Signals · BTC + XRP · Annotated charts</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- PAYANT ES -->
+    <a href="https://argentinvest.gumroad.com/l/jsdkxc" class="link-card orange" target="_blank">
+      <div class="badge price">37€</div>
+      <div class="link-icon orange-bg">🔑</div>
+      <div class="link-body">
+        <div class="link-title">Informe Completo — Español</div>
+        <div class="link-sub">11 páginas · Señales 2026 · BTC + XRP · Gráficos anotados</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider">
+    <div class="div-line"></div>
+    <div class="div-sym">✦</div>
+    <div class="div-line"></div>
+  </div>
+
+  <!-- SECTION : COMMUNAUTÉ -->
+  <div class="section-label">Communauté & Réseaux</div>
+
+  <div class="links">
+
+    <!-- TELEGRAM -->
+    <a href="https://t.me/argentinvestcrypto" class="link-card blue" target="_blank">
+      <div class="link-icon blue-bg">✈️</div>
+      <div class="link-body">
+        <div class="link-title">Telegram — Canal Privé</div>
+        <div class="link-sub">Alertes éclipses en temps réel · Analyses exclusives</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- YOUTUBE -->
+    <a href="https://www.youtube.com/@argentinvest8145" class="link-card red" target="_blank">
+      <div class="link-icon red-bg">▶️</div>
+      <div class="link-body">
+        <div class="link-title">YouTube — ArgentInvest</div>
+        <div class="link-sub">Vidéos · Analyses · Eclipse Cycles expliqués</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- TIKTOK -->
+    <a href="https://www.tiktok.com/@samuelhoniat" class="link-card muted" target="_blank">
+      <div class="link-icon muted-bg">🎵</div>
+      <div class="link-body">
+        <div class="link-title">TikTok — @ArgentInvest</div>
+        <div class="link-sub">Shorts · Crashes · Signaux en 60 secondes</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- INSTAGRAM -->
+    <a href="https://www.instagram.com/138_phenix/" class="link-card muted" target="_blank">
+      <div class="link-icon muted-bg">📸</div>
+      <div class="link-body">
+        <div class="link-title">Instagram — @ArgentInvest</div>
+        <div class="link-sub">Graphiques · Infos · Communauté</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- TWITTER -->
+    <a href="https://x.com/argentinvest92" class="link-card muted" target="_blank">
+      <div class="link-icon muted-bg">𝕏</div>
+      <div class="link-body">
+        <div class="link-title">Twitter/X — @ArgentInvest</div>
+        <div class="link-sub">Analyses · Threads · Signaux Eclipse</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+  </div>
+
+  <!-- CITATION -->
+  <div class="quote-box">
+    <div class="quote-text">« Le cosmos trace les cycles. Le trader qui les lit a un avantage décisif. La faillite de FTX s'est produite le jour exact d'une éclipse totale lunaire. »</div>
+    <div class="quote-author">— ArgentInvest, Avril 2026</div>
+  </div>
+
+  <!-- ICÔNES RÉSEAUX -->
+  <div class="socials">
+    <a href="https://www.youtube.com/@argentinvest8145" class="social-btn" title="YouTube">▶</a>
+    <a href="https://www.tiktok.com/@samuelhoniat" class="social-btn" title="TikTok">♪</a>
+    <a href="https://www.instagram.com/138_phenix/" class="social-btn" title="Instagram">◎</a>
+    <a href="https://x.com/argentinvest92" class="social-btn" title="Twitter/X">𝕏</a>
+    <a href="https://t.me/argentinvestcrypto" class="social-btn" title="Telegram">✈</a>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    © 2026 ArgentInvest · Tous droits réservés<br>
+    Analyse observationnelle · Pas un conseil en investissement
+  </div>
+
+</div>
+
+<script>
+// ── Canvas étoiles animées ─────────────────────────────────────
+const canvas = document.getElementById('cosmos');
+const ctx = canvas.getContext('2d');
+let stars = [];
+let W, H;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function createStars(n) {
+  stars = [];
+  for (let i = 0; i < n; i++) {
+    stars.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.4 + 0.2,
+      alpha: Math.random() * 0.6 + 0.1,
+      speed: Math.random() * 0.003 + 0.001,
+      phase: Math.random() * Math.PI * 2,
+      drift: (Math.random() - 0.5) * 0.015,
+    });
+  }
+}
+
+function drawStars(t) {
+  ctx.clearRect(0, 0, W, H);
+  for (const s of stars) {
+    const a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+    ctx.beginPath();
+    ctx.arc(s.x + Math.sin(t * s.drift) * 2, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${a})`;
+    ctx.fill();
+  }
+  // Quelques étoiles dorées
+  for (let i = 0; i < 12; i++) {
+    const s = stars[i * 7];
+    if (!s) continue;
+    const a = s.alpha * (0.4 + 0.6 * Math.sin(t * s.speed * 1.5 + s.phase));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r * 1.3, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(201,168,76,${a * 0.5})`;
+    ctx.fill();
+  }
+}
+
+function animate(t) {
+  drawStars(t * 0.001);
+  requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', () => { resize(); createStars(150); });
+resize();
+createStars(150);
+requestAnimationFrame(animate);
+
+// ── Effet hover magnétique sur les cartes ─────────────────────
+document.querySelectorAll('.link-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 6;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 6;
+    card.style.transform = `translateY(-3px) rotateX(${-y}deg) rotateY(${x}deg) scale(1.015)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+</script>
+
+</body>
+</html>
